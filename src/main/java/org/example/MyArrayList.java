@@ -59,14 +59,12 @@ public class MyArrayList<E> implements List<E> {
 
     @Override
     public boolean contains(Object o) {
-        // TODO: 27.10.2023 implement
-        return false;
+        return indexOf(o) != -1;
     }
 
     @Override
     public Iterator<E> iterator() {
-        // TODO: 27.10.2023 implement
-        return null;
+        return new MyIterator();
     }
 
     @Override
@@ -123,56 +121,96 @@ public class MyArrayList<E> implements List<E> {
 
     @Override
     public boolean retainAll(Collection<?> c) {
+        // TODO: 27.10.2023 implement
         return false;
     }
 
     @Override
     public void clear() {
-
+        // TODO: 27.10.2023 implement
     }
 
     @Override
     public E get(int index) {
+        // TODO: 27.10.2023 implement
         return null;
     }
 
     @Override
     public E set(int index, E element) {
+        // TODO: 27.10.2023 implement
         return null;
     }
 
     @Override
     public void add(int index, E element) {
+        // TODO: 27.10.2023 implement
 
     }
 
     @Override
     public E remove(int index) {
+        // TODO: 27.10.2023 implement
         return null;
     }
 
     @Override
     public int indexOf(Object o) {
-        return 0;
+        for (int i = 0; i < size; i++) {
+            if (o.equals(elementData[i])) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
     public int lastIndexOf(Object o) {
+        // TODO: 27.10.2023 implement
         return 0;
     }
 
     @Override
     public ListIterator<E> listIterator() {
+        // TODO: 27.10.2023 implement
         return null;
     }
 
     @Override
     public ListIterator<E> listIterator(int index) {
+        // TODO: 27.10.2023 implement
         return null;
     }
 
     @Override
     public List<E> subList(int fromIndex, int toIndex) {
+//        int subSize = toIndex-fromIndex;
+//        List<E> subList = List.of(Arrays.copyOfRange(elementData, fromIndex, toIndex));
+//        return new MyArrayList<>();
         return null;
+    }
+
+    private class MyIterator implements Iterator<E> {
+
+        private int cursor;
+        private int prevValue = -1;
+
+        public MyIterator() {
+        }
+
+        @Override
+        public boolean hasNext() {
+            return size > cursor;
+        }
+
+        @Override
+        public E next() {
+            if (cursor >= size) {
+                throw new NoSuchElementException();
+            }
+            prevValue = cursor;
+            //noinspection unchecked
+            return (E) elementData[cursor++];
+        }
     }
 }
