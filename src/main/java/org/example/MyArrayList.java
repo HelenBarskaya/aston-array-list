@@ -72,9 +72,14 @@ public class MyArrayList<E> implements List<E> {
         return Arrays.copyOf(elementData, size);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T[] toArray(T[] a) {
-        // TODO: 27.10.2023 implement
+        // TODO: 28.10.2023 implement 
+//        if (a.length < size) {
+//            return (T[]) Arrays.copyOf(elementData, a.length, a.getClass());
+//        }
+//        System.arraycopy(elementData, 0, a, 0, size);
         return null;
     }
 
@@ -91,7 +96,11 @@ public class MyArrayList<E> implements List<E> {
 
     @Override
     public boolean remove(Object o) {
-        // TODO: 27.10.2023 implement
+        int index = indexOf(o);
+        if (index != -1) {
+            remove(index);
+            return true;
+        }
         return false;
     }
 
@@ -127,31 +136,56 @@ public class MyArrayList<E> implements List<E> {
 
     @Override
     public void clear() {
-        // TODO: 27.10.2023 implement
+        for (Object element: elementData) {
+            element = null;
+        }
+        size = 0;
     }
 
     @Override
     public E get(int index) {
-        // TODO: 27.10.2023 implement
-        return null;
+        if (index < 0 || index >= size) {
+            throw new NoSuchElementException("Illegal index: " + index);
+        }
+        //noinspection unchecked
+        return (E) elementData[index];
     }
 
     @Override
     public E set(int index, E element) {
-        // TODO: 27.10.2023 implement
-        return null;
+        if (index < 0 || index >= size) {
+            throw new NoSuchElementException("Illegal index: " + index);
+        }
+        elementData[index] = element;
+        //noinspection unchecked
+        return (E) elementData[index];
     }
 
     @Override
     public void add(int index, E element) {
-        // TODO: 27.10.2023 implement
-
+        if (index < 0 || index > size) {
+            throw new NoSuchElementException("Illegal index: " + index);
+        } else if (index == size) {
+            add(element);
+            return;
+        } else if (size == elementData.length) {
+            grow();
+        }
+        System.arraycopy(elementData, index, elementData, index + 1, size - index);
+        elementData[index] = element;
+        ++size;
     }
 
     @Override
     public E remove(int index) {
-        // TODO: 27.10.2023 implement
-        return null;
+        if (index < 0 || index >= size) {
+            throw new NoSuchElementException("Illegal index: " + index);
+        }
+        Object element = elementData[index];
+        System.arraycopy(elementData, index + 1, elementData, index, size - index);
+        elementData[--size] = null;
+        //noinspection unchecked
+        return (E) element;
     }
 
     @Override
@@ -166,34 +200,34 @@ public class MyArrayList<E> implements List<E> {
 
     @Override
     public int lastIndexOf(Object o) {
-        // TODO: 27.10.2023 implement
-        return 0;
+        for (int i = size; i >= 0; i--) {
+            if (o.equals(elementData[i])) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
     public ListIterator<E> listIterator() {
-        // TODO: 27.10.2023 implement
-        return null;
+        return new MyListIterator();
     }
 
     @Override
     public ListIterator<E> listIterator(int index) {
-        // TODO: 27.10.2023 implement
-        return null;
+        return new MyListIterator(index);
     }
 
     @Override
     public List<E> subList(int fromIndex, int toIndex) {
-//        int subSize = toIndex-fromIndex;
-//        List<E> subList = List.of(Arrays.copyOfRange(elementData, fromIndex, toIndex));
-//        return new MyArrayList<>();
-        return null;
+        //noinspection unchecked
+        return List.of((E[]) Arrays.copyOfRange(elementData, fromIndex, toIndex));
     }
 
     private class MyIterator implements Iterator<E> {
 
-        private int cursor;
-        private int prevValue = -1;
+        protected int cursor;
+        protected int prevValue = -1;
 
         public MyIterator() {
         }
@@ -211,6 +245,68 @@ public class MyArrayList<E> implements List<E> {
             prevValue = cursor;
             //noinspection unchecked
             return (E) elementData[cursor++];
+        }
+    }
+
+    private class MyListIterator extends MyIterator implements ListIterator<E> {
+
+        public MyListIterator() {
+        }
+
+        public MyListIterator(int index) {
+            super();
+            cursor = index;
+        }
+
+        @Override
+        public boolean hasPrevious() {
+            return (cursor - 1 >= 0 && size > 2);
+        }
+
+        @Override
+        public E previous() {
+            if (!hasPrevious()) {
+                throw new NoSuchElementException();
+            }
+            --cursor;
+            prevValue = cursor - 1;
+            //noinspection unchecked
+            return (E) elementData[cursor];
+        }
+
+        @Override
+        public int nextIndex() {
+            if (cursor >= size) {
+                throw new NoSuchElementException();
+            }
+            prevValue = cursor;
+            return cursor++;
+        }
+
+        @Override
+        public int previousIndex() {
+            if (!hasPrevious()) {
+                throw new NoSuchElementException();
+            }
+            --cursor;
+            prevValue = cursor - 1;
+            return cursor;
+        }
+
+        @Override
+        public void remove() {
+//            MyArrayList.this.remove(cursor--);
+//            prevValue = cursor - 1;
+        }
+
+        @Override
+        public void set(E e) {
+            //elementData[cursor] = e;
+        }
+
+        @Override
+        public void add(E e) {
+            //MyArrayList.this.add(cursor, e);
         }
     }
 }
