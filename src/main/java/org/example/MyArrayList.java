@@ -72,15 +72,18 @@ public class MyArrayList<E> implements List<E> {
         return Arrays.copyOf(elementData, size);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> T[] toArray(T[] a) {
-        // TODO: 28.10.2023 implement 
-//        if (a.length < size) {
-//            return (T[]) Arrays.copyOf(elementData, a.length, a.getClass());
-//        }
-//        System.arraycopy(elementData, 0, a, 0, size);
-        return null;
+        // TODO: 29.10.2023
+        if (a.length < size){
+            //noinspection unchecked
+            return (T[]) Arrays.copyOf(elementData, size, a.getClass());
+        }
+        System.arraycopy(elementData, 0, a, 0, size);
+        if (a.length > size) {
+            a[size] = null;
+        }
+        return a;
     }
 
     @Override
