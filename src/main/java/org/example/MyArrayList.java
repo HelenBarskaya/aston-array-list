@@ -43,8 +43,8 @@ public class MyArrayList<E> implements List<E> {
         }
     }
 
-    private void grow() {
-        elementData = Arrays.copyOf(elementData, (elementData.length * 3) / 2 + 1);
+    private void grow(int minSize) {
+        elementData = Arrays.copyOf(elementData, (minSize * 3) / 2 + 1);
     }
 
     @Override
@@ -74,8 +74,7 @@ public class MyArrayList<E> implements List<E> {
 
     @Override
     public <T> T[] toArray(T[] a) {
-        // TODO: 29.10.2023
-        if (a.length < size){
+        if (a.length < size) {
             //noinspection unchecked
             return (T[]) Arrays.copyOf(elementData, size, a.getClass());
         }
@@ -90,7 +89,7 @@ public class MyArrayList<E> implements List<E> {
     public boolean add(E e) {
         int oldSize = size;
         if (size == elementData.length) {
-            grow();
+            grow(size);
         }
         elementData[oldSize] = e;
         ++size;
@@ -109,20 +108,34 @@ public class MyArrayList<E> implements List<E> {
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        // TODO: 27.10.2023 implement
-        return false;
+        for (Object object : c) {
+            if (!contains(object)) return false;
+        }
+        return true;
     }
 
     @Override
     public boolean addAll(Collection<? extends E> c) {
-        // TODO: 27.10.2023 implement
-        return false;
+        return addAll(0, c);
     }
 
     @Override
     public boolean addAll(int index, Collection<? extends E> c) {
-        // TODO: 27.10.2023 implement
-        return false;
+        if (index < 0 || index > c.size()) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (c.isEmpty()) {
+            return false;
+        }
+
+        Object[] additionalArray = c.toArray();
+        int newSize = size + (c.size() - index);
+        if (newSize > elementData.length) {
+            grow(size + newSize);
+        }
+        System.arraycopy(additionalArray, index, elementData, size, newSize - size);
+        size = newSize;
+        return true;
     }
 
     @Override
@@ -139,7 +152,7 @@ public class MyArrayList<E> implements List<E> {
 
     @Override
     public void clear() {
-        for (Object element: elementData) {
+        for (Object element : elementData) {
             element = null;
         }
         size = 0;
@@ -172,7 +185,7 @@ public class MyArrayList<E> implements List<E> {
             add(element);
             return;
         } else if (size == elementData.length) {
-            grow();
+            grow(size);
         }
         System.arraycopy(elementData, index, elementData, index + 1, size - index);
         elementData[index] = element;
