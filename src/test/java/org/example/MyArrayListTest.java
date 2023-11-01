@@ -391,4 +391,30 @@ public class MyArrayListTest {
         Assertions.assertArrayEquals(strings, list.toArray(new String[0]));
         Assertions.assertArrayEquals(strings, list.toArray());
     }
+
+    @SuppressWarnings("SimplifiableAssertion")
+    @DisplayName("Checking lists for equality test")
+    @Test
+    public void equalsTest() {
+        List<String> firstList = new ArrayList<>(List.of("One Item", "Two Item"));
+        List<String> secondList = new ArrayList<>(List.of("One Item", "Two Item"));
+        List<String> thirdList = new ArrayList<>(List.of("One Item"));
+
+        //noinspection EqualsWithItself
+        Assertions.assertTrue(firstList.equals(firstList));
+        Assertions.assertTrue(firstList.equals(secondList));
+        Assertions.assertFalse(firstList.equals(thirdList));
+    }
+
+    @DisplayName("Get hashCode test")
+    @Test
+    public void hashCodeTest() {
+        List<String> firstList = new ArrayList<>(List.of("One Item", "Two Item"));
+        List<String> secondList = new ArrayList<>(List.of("One Item", "Two Item"));
+        List<String> thirdList = new ArrayList<>(List.of("One Item"));
+
+        Assertions.assertEquals(firstList.hashCode(), firstList.hashCode());
+        Assertions.assertEquals(firstList.hashCode(), secondList.hashCode());
+        Assertions.assertNotEquals(firstList.hashCode(), thirdList.hashCode());
+    }
 }

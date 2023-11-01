@@ -418,6 +418,35 @@ public class MyArrayList<E> implements List<E> {
     }
 
     /**
+     * Сравнивает передаваемый объект с текущим списком.
+     *
+     * @param o объект, который будет сравниваться с текущим списком
+     * @return {@code true} если переданный объект равен текущему списку, в противном случае - {@code false}
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof MyArrayList<?> that)) {
+            return false;
+        }
+
+        return size == that.size && Arrays.equals(elementData, that.elementData);
+    }
+
+    /**
+     * @return хэш-код текущего списка
+     */
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(size);
+        result = 31 * result + Arrays.hashCode(elementData);
+        return result;
+    }
+
+    /**
      * Класс итератора, реализующий интерфейс {@link Iterator}. Позволяет обходить коллекцию в цикле {@code for each} и
      * удалять элементы во время обхода.
      */
